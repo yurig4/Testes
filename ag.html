@@ -1,22 +1,66 @@
-<form id="form">
-  <input type="text" name="nome" placeholder="Seu nome">
-  <!-- outros campos -->
-  <button type="submit">Agendar</button>
-</form>
-
-<button onclick="abrirUploader()">Enviar Roteiro (PDF)</button>
-
 <script>
-  function abrirUploader() {
-    window.open(
-      "https://script.google.com/macros/s/AKfycbzmnwPGsNti7vdouZlY_bPK0dKbFGvD-zXt9ZRtXbL7nNEMbr8iNzbKFriMqh6SQcHZ/exec",
-      "uploadJanela",
-      "width=500,height=300"
-    );
+document.getElementById('aulasPraticasForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+  const dados = {};
+  formData.forEach((value, key) => {
+    if (dados[key]) {
+      if (Array.isArray(dados[key])) {
+        dados[key].push(value);
+      } else {
+        dados[key] = [dados[key], value];
+      }
+    } else {
+      dados[key] = value;
+    }
+  });
+
+  // Validação extra (laboratório)
+  const laboratorios = Array.from(document.querySelectorAll('input[name="laboratorio"]:checked')).map(el => el.value);
+  if (laboratorios.length === 0) {
+    alert('Por favor, selecione pelo menos um laboratório.');
+    return;
+  }
+  dados.laboratorio = laboratorios;
+
+  // Validação 48h
+  const hoje = new Date();
+  const dataSelecionada = new Date(dados.data);
+  const minimo = new Date();
+  minimo.setDate(hoje.getDate() + 2);
+  if (dataSelecionada < minimo) {
+    alert('O prazo mínimo para agendamento é de 48 horas.');
+    return;
   }
 
-  document.getElementById("form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    // coleta dados e envia via fetch() ou form POST comum
+  const btn = form.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.innerText = 'Enviando...';
+
+  fetch('https://script.google.com/macros/s/AKfycbzmnwPGsNti7vdouZlY_bPK0dKbFGvD-zXt9ZRtXbL7nNEMbr8iNzbKFriMqh6SQcHZ/exec', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados)
+  })
+  .then(() => {
+    document.querySelector('.form-container').innerHTML = `
+      <h2>✅ Agendamento realizado com sucesso!</h2>
+      <p>Você receberá um e-mail de confirmação em breve.</p>
+      <button onclick="abrirUpload()">📎 Enviar Roteiro</button>
+      <button onclick="window.location.reload()">➕ Novo Agendamento</button>
+    `;
+  })
+  .catch(err => {
+    console.error('Erro:', err);
+    alert('Erro ao enviar formulário. Tente novamente.');
+    btn.disabled = false;
+    btn.innerText = 'Enviar Registro';
   });
+});
+
+function abrirUpload() {
+  window.open('https://script.google.com/macros/s/SEU_DEPLOY_ID/exec?view=upload', 'uploadJanela', 'width=500,height=400');
+}
 </script>
