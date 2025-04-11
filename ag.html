@@ -1,186 +1,686 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>Registro de Aulas Práticas</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 20px;
-    }
-    .container {
-      background: #fff;
-      max-width: 700px;
-      margin: auto;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-    h2 {
-      color: #333;
-      text-align: center;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    button {
-      margin-top: 25px;
-      padding: 12px;
-      background-color: #4285f4;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #3367d6;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Aulas Práticas</title>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --primary-hover: #3367d6;
+            --secondary-color: #f8f9fa;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --success-color: #0f9d58;
+            --error-color: #db4437;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            background-color: #f5f7fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 650px;
+            padding: 0;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 500;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .form-column {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+            font-size: 15px;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin: 30px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .checkbox-container {
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 8px;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            accent-color: var(--primary-color);
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .file-input-container {
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            border: 2px dashed var(--primary-color);
+            border-radius: 8px;
+            padding: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .file-input-label:hover {
+            background-color: rgba(66, 133, 244, 0.1);
+        }
+        
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-input-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-input-icon {
+            font-size: 36px;
+            color: var(--primary-color);
+        }
+        
+        .file-input-text {
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .file-input-help {
+            font-size: 14px;
+            color: #777;
+            text-align: center;
+        }
+        
+        .number-input {
+            width: 100%;
+        }
+        
+        button {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            margin-top: 15px;
+        }
+        
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .date-note {
+            font-size: 13px;
+            color: #777;
+            margin-top: 8px;
+        }
+        
+        .alert {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border-left: 4px solid #ffeeba;
+            font-weight: 500;
+        }
+        
+        /* Estilo para o container do calendário */
+        .calendar-container {
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: none; /* Inicialmente oculto */
+            max-width: 100%;
+            height: 400px;
+        }
+        
+        .calendar-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        @media (max-width: 600px) {
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .calendar-container {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Registro de Aulas Práticas</h2>
-    <div class="form-container">
-      <form id="aulasPraticasForm">
-        <label>Nome do Professor:</label>
-        <input type="text" name="nomeProfessor" required>
-
-        <label>Email:</label>
-        <input type="email" name="emailProfessor" required>
-
-        <label>Disciplina:</label>
-        <input type="text" name="disciplina" required>
-
-        <label>Turma:</label>
-        <input type="text" name="turma" required>
-
-        <label>Assunto da Aula:</label>
-        <input type="text" name="assunto" required>
-
-        <label>Data da Aula:</label>
-        <input type="date" name="data" required>
-
-        <label>Horário de Início:</label>
-        <input type="time" name="horarioInicio" required>
-
-        <label>Horário de Término:</label>
-        <input type="time" name="horarioFim" required>
-
-        <label>Número de Alunos:</label>
-        <input type="number" name="numAlunos" required>
-
-        <label>Número de Grupos:</label>
-        <input type="number" name="numGrupos" required>
-
-        <label>Laboratório:</label>
-        <div>
-          <input type="checkbox" name="laboratorio" value="Didático"> Didático
-          <input type="checkbox" name="laboratorio" value="Agronomia"> Agronomia
-          <input type="checkbox" name="laboratorio" value="Analítica"> Analítica
+    <div class="container">
+        <div class="header">
+            <h2>Registro de Aulas Práticas</h2>
         </div>
-
-        <label>Vidrarias por Grupo:</label>
-        <textarea name="vidrariasGrupo" required></textarea>
-
-        <label>Vidrarias Comuns:</label>
-        <textarea name="vidrariasComuns"></textarea>
-
-        <label>Soluções:</label>
-        <textarea name="solucoes"></textarea>
-
-        <label>Reagentes:</label>
-        <textarea name="reagentes"></textarea>
-
-        <label>Equipamentos:</label>
-        <textarea name="equipamentos"></textarea>
-
-        <label>Observações:</label>
-        <textarea name="observacoes"></textarea>
-
-        <button type="submit">Enviar Registro</button>
-      </form>
+        <div class="form-container">
+            <form id="aulasPraticasForm">
+                <div class="section-title">Dados do Solicitante</div>
+                
+                <div class="form-group">
+                    <label for="nomeProfessor">Nome do Professor:</label>
+                    <input type="text" id="nomeProfessor" name="nomeProfessor" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="emailProfessor">Email:</label>
+                    <input type="email" id="emailProfessor" name="emailProfessor" required>
+                </div>
+                
+                <div class="section-title">Informações da Disciplina</div>
+                
+                <div class="form-group">
+                    <label for="disciplina">Nome da Disciplina:</label>
+                    <input type="text" id="disciplina" name="disciplina" required>
+                </div>
+                                              
+                <div class="form-group">
+                    <label for="turma">Turma:</label>
+                    <input type="text" id="turma" name="turma" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="assunto">Assunto da Aula:</label>
+                    <input type="text" id="assunto" name="assunto" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="data">Data da Aula:</label>
+                    <input type="date" id="data" name="data" required>
+                    <div class="alert">O prazo mínimo para agendamento é de 48 horas.</div>
+                    
+                    <!-- Container do Calendário - Será mostrado quando uma data for selecionada -->
+                    <div id="calendarContainer" class="calendar-container">
+                        <div class="section-title" style="margin-top: 15px;">Agenda da Data Selecionada</div>
+                        <iframe id="calendarIframe" class="calendar-iframe" scrolling="no"></iframe>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-column">
+                        <label for="horarioInicio">Horário de Início:</label>
+                        <input type="time" id="horarioInicio" name="horarioInicio" required>
+                    </div>
+                    <div class="form-column">
+                        <label for="horarioFim">Horário de Término:</label>
+                        <input type="time" id="horarioFim" name="horarioFim" required onchange="if(this.value < document.getElementById('horarioInicio').value){alert('O horário de término não pode ser anterior ao horário de início!'); this.value='';}">
+                    </div>
+                </div>
+                
+                <div class="section-title">Organização da Aula</div>
+                
+                <div class="form-row">
+                    <div class="form-column">
+                        <label for="numAlunos">Número de Alunos:</label>
+                        <input type="number" id="numAlunos" name="numAlunos" min="1" class="number-input" required>
+                    </div>
+                    <div class="form-column">
+                        <label for="numGrupos">Número de Grupos:</label>
+                        <input type="number" id="numGrupos" name="numGrupos" min="1" class="number-input" required>
+                    </div>
+                </div>
+                
+                <div class="section-title">Laboratório</div>
+                
+                <div class="form-group">
+                    <label>Laboratório que será realizada a aula:</label>
+                    <div class="checkbox-container">
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lab1" name="laboratorio" value="Didático">
+                                <label for="lab1">Didático</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lab2" name="laboratorio" value="Agronomia">
+                                <label for="lab2">Agronomia</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lab3" name="laboratorio" value="Alimentos - Animal">
+                                <label for="lab3">Alimentos - Animal</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lab4" name="laboratorio" value="Alimentos - Vegetal">
+                                <label for="lab4">Alimentos - Vegetal</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lab5" name="laboratorio" value="Analítica">
+                                <label for="lab5">Analítica</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lab6" name="laboratorio" value="Biologia / Microbiologia">
+                                <label for="lab6">Biologia / Microbiologia</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lab7" name="laboratorio" value="Bioquímica / Orgânica">
+                                <label for="lab7">Bioquímica / Orgânica</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lab8" name="laboratorio" value="Central (equipamentos)">
+                                <label for="lab8">Central (equipamentos)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lab9" name="laboratorio" value="Sala de análise sensorial">
+                                <label for="lab9">Sala de análise sensorial</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-title">Materiais Necessários</div>
+                
+                <div class="form-group">
+                    <label for="vidrariasGrupo">Vidrarias por Grupo:</label>
+                    <textarea id="vidrariasGrupo" name="vidrariasGrupo" rows="4" placeholder="Liste as vidrarias necessárias para cada grupo (ex: 3 béqueres de 100mL, 2 provetas de 50mL, etc.)" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="vidrariasComuns">Vidrarias de Uso Comum:</label>
+                    <textarea id="vidrariasComuns" name="vidrariasComuns" rows="4" placeholder="Liste as vidrarias de uso comum para toda a turma (ex: 1 balança analítica, 2 chapas de aquecimento, etc.)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="solucoes">Soluções a Preparar:</label>
+                    <textarea id="solucoes" name="solucoes" rows="4" placeholder="Liste as soluções que precisam ser preparadas (ex: 500mL de NaOH 0,1M, 250mL de H2SO4 0,5M, etc.)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reagentes">Reagentes Necessários:</label>
+                    <textarea id="reagentes" name="reagentes" rows="4" placeholder="Liste os reagentes necessários para a aula (ex: 100g de cloreto de sódio, 50mL de ácido acético, etc.)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="equipamentos">Equipamentos Necessários:</label>
+                    <textarea id="equipamentos" name="equipamentos" rows="4" placeholder="Liste os equipamentos necessários para a aula (ex: 2 microscópios, 1 centrífuga, 3 espectrofotômetros, etc.)"></textarea>
+                </div>
+                
+                <div class="section-title">Roteiro da Aula</div>
+                
+                <div class="form-group">
+                    <label for="roteiro">Faça upload do roteiro da aula:</label>
+                    <div class="file-input-container">
+                        <label for="roteiro" class="file-input-label">
+                            <div class="file-input-content">
+                                <div class="file-input-icon">📄</div>
+                                <div class="file-input-text">Clique para fazer upload do roteiro</div>
+                                <div class="file-input-help">Formatos aceitos: PDF, DOC, DOCX (máx. 5MB)</div>
+                            </div>
+                        </label>
+                        <input type="file" id="roteiro" name="roteiro" class="file-input" accept=".pdf,.doc,.docx">
+                    </div>
+                </div>
+                
+                <div class="section-title">Observações Adicionais</div>
+                
+                <div class="form-group">
+                    <label for="observacoes">Observações:</label>
+                    <textarea id="observacoes" name="observacoes" rows="5" placeholder="Informações adicionais, requisitos especiais ou outras observações relevantes"></textarea>
+                </div>
+                
+                <button type="submit">Enviar Registro</button>
+            </form>
+        </div>
     </div>
-  </div>
 
-  <script>
-    document.getElementById('aulasPraticasForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const dados = {};
-      formData.forEach((value, key) => {
-        if (dados[key]) {
-          if (Array.isArray(dados[key])) {
-            dados[key].push(value);
-          } else {
-            dados[key] = [dados[key], value];
+    <script>
+        document.getElementById('aulasPraticasForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // Coletar dados do formulário
+          const formData = {
+            nomeProfessor: document.getElementById('nomeProfessor').value,
+            emailProfessor: document.getElementById('emailProfessor').value,
+            disciplina: document.getElementById('disciplina').value,
+            turma: document.getElementById('turma').value,
+            assunto: document.getElementById('assunto').value,
+            data: document.getElementById('data').value,
+            horarioInicio: document.getElementById('horarioInicio').value,
+            horarioFim: document.getElementById('horarioFim').value,
+            numAlunos: document.getElementById('numAlunos').value,
+            numGrupos: document.getElementById('numGrupos').value,
+            laboratorio: Array.from(document.querySelectorAll('input[name="laboratorio"]:checked')).map(el => el.value),
+            vidrariasGrupo: document.getElementById('vidrariasGrupo').value,
+            vidrariasComuns: document.getElementById('vidrariasComuns').value,
+            solucoes: document.getElementById('solucoes').value,
+            reagentes: document.getElementById('reagentes').value,
+            equipamentos: document.getElementById('equipamentos').value,
+            observacoes: document.getElementById('observacoes').value
+          };
+          
+          // Validações básicas
+          if (formData.laboratorio.length === 0) {
+            alert('Por favor, selecione pelo menos um laboratório.');
+            return;
           }
-        } else {
-          dados[key] = value;
+          
+          // Verificar se a data selecionada respeita o prazo mínimo de 48h
+          const dataAtual = new Date();
+          const dataSelecionada = new Date(formData.data);
+          const prazoMinimo = new Date(dataAtual);
+          prazoMinimo.setDate(dataAtual.getDate() + 2); // +2 dias (48h)
+          
+          if (dataSelecionada < prazoMinimo) {
+            alert('O prazo mínimo para agendamento é de 48 horas.');
+            return;
+          }
+          
+          // Exibir mensagem de processamento
+          const btnSubmit = document.querySelector('button[type="submit"]');
+          const btnTextoOriginal = btnSubmit.innerHTML;
+          btnSubmit.innerHTML = 'Enviando...';
+          btnSubmit.disabled = true;
+          
+          console.log('Dados enviados:', formData);
+    
+          // Substitua pela URL da sua Web App do Google Apps Script
+          fetch("https://script.google.com/macros/s/AKfycbwk1YTggIzGp7RmBUaoeLK1aTvHVK3VpYcqh_b3V0kJz_NaTd2gt4IRhpcUTMepKnG3ww/exec", {
+            method: 'POST',
+            mode: 'no-cors', // Necessário para requisições cross-origin
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          })
+          .then(response => {
+            // Devido ao modo 'no-cors', não podemos acessar o conteúdo da resposta diretamente
+            // Vamos assumir que a operação foi bem-sucedida se chegamos aqui
+            
+            // Exibir mensagem de sucesso
+            alert('Agendamento enviado com sucesso! Você receberá um e-mail de confirmação em breve.');
+            
+            // Limpar formulário
+            //document.getElementById('aulasPraticasForm').reset();
+            
+            // Ocultar o calendário
+            document.getElementById('calendarContainer').style.display = 'none';
+            
+            // Restaurar o botão
+            btnSubmit.innerHTML = btnTextoOriginal;
+            btnSubmit.disabled = false;
+          })
+          .catch(error => {
+            console.error('Erro:', error);
+            alert('Ocorreu um erro ao enviar o formulário. Por favor, tente novamente mais tarde.');
+            
+            // Restaurar o botão
+            btnSubmit.innerHTML = btnTextoOriginal;
+            btnSubmit.disabled = false;
+          });
+        });
+        
+        // Função para verificar disponibilidade de horários para a data selecionada
+        document.getElementById('data').addEventListener('change', function() {
+          const dataConsulta = this.value;
+          if (!dataConsulta) {
+            // Se a data for limpa, esconder o calendário
+            document.getElementById('calendarContainer').style.display = 'none';
+            return;
+          }
+          
+          // Verificar se a data respeita o prazo mínimo
+          const dataAtual = new Date();
+          const dataSelecionada = new Date(dataConsulta);
+          const prazoMinimo = new Date(dataAtual);
+          prazoMinimo.setDate(dataAtual.getDate() + 2); // +2 dias (48h)
+          
+          if (dataSelecionada < prazoMinimo) {
+            alert('O prazo mínimo para agendamento é de 48 horas.');
+            this.value = '';
+            // Esconder o calendário se a data for inválida
+            document.getElementById('calendarContainer').style.display = 'none';
+            return;
+          }
+          
+          // Atualizar o iframe com a data selecionada
+          atualizarCalendario(dataConsulta);
+          
+          // Opcional: consultar disponibilidade de horários
+          fetch("https://script.google.com/macros/s/AKfycbwmhdqEKvn91_0cHkmmrvguTceuLxeKx3E1zwdFLx0hnL2wIF4dgV8077nmGB17nDkVUg/exec", {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: dataConsulta })
+          })
+          .then(response => {
+            // Processar resposta
+          })
+          .catch(error => {
+            console.error('Erro ao verificar disponibilidade:', error);
+          });
+        });
+        
+        // Função para atualizar o iframe do calendário com a data selecionada
+        function atualizarCalendario(data) {
+          const calendarContainer = document.getElementById('calendarContainer');
+          const calendarIframe = document.getElementById('calendarIframe');
+          
+          // Formatar a data para o formato YYYYMMDD esperado pelo Google Calendar
+          const dataObj = new Date(data);
+          const ano = dataObj.getFullYear();
+          const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+          const dia = String(dataObj.getDate() + 1).padStart(2, '0');
+          const dataFormatada = `${ano}${mes}${dia}`;
+          
+          // Construir a URL do Google Calendar com a data selecionada
+          const calendarUrl = `https://calendar.google.com/calendar/embed?src=yuri.araujo%40ifsp.edu.br&ctz=America%2FSao_Paulo&mode=AGENDA&dates=${dataFormatada}/${dataFormatada}`;
+
+          
+          // Atualizar o src do iframe
+          calendarIframe.src = calendarUrl;
+          
+          // Mostrar o container do calendário
+          calendarContainer.style.display = 'block';
+          
+          // Scroll suave para o calendário
+          setTimeout(() => {
+            calendarContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 100);
         }
-      });
+        
+        // Função para lidar com o upload do roteiro
+       
+        document.getElementById("uploadForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+    
+            const fileInput = document.getElementById("arquivo").files[0];
+            if (!fileInput) {
+                alert("Selecione um arquivo!");
+                return;
+         }
 
-      // Verifica laboratórios
-      const labs = Array.from(document.querySelectorAll('input[name="laboratorio"]:checked')).map(el => el.value);
-      if (labs.length === 0) {
-        alert('Selecione pelo menos um laboratório.');
-        return;
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput);
+            reader.onload = async function () {
+                const base64String = reader.result.split(",")[1];
+
+                const response = await fetch("https://script.google.com/macros/s/AKfycbwk1YTggIzGp7RmBUaoeLK1aTvHVK3VpYcqh_b3V0kJz_NaTd2gt4IRhpcUTMepKnG3ww/execRIPT", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        nomeProfessor: "João",
+                        emailProfessor: "joao@example.com",
+                        roteiro: base64String // Envia como base64
+                    })
+                });
+
+                const result = await response.json();
+                alert(result.message);
+        };
+});
+
+// Novo código para envio do formulário
+document.getElementById('meuFormulario').addEventListener('submit', function(e) {
+  e.preventDefault(); // Impedir envio padrão
+  
+  // Mostrar indicador de carregamento
+  const btnSubmit = document.querySelector('button[type="submit"]');
+  const btnTextoOriginal = btnSubmit.textContent;
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = 'Enviando...';
+  
+  // Obter arquivo e outros dados do formulário
+  const formData = new FormData(this);
+  
+  // URL do seu Google Apps Script Web App publicado
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbwk1YTggIzGp7RmBUaoeLK1aTvHVK3VpYcqh_b3V0kJz_NaTd2gt4IRhpcUTMepKnG3ww/exec';
+  
+  // Enviar para o Google Apps Script
+  fetch(scriptUrl, {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Restaurar botão
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = btnTextoOriginal;
+    
+    if (data.success) {
+      // Mostrar mensagem de sucesso
+      alert('Arquivo enviado com sucesso!');
+      // Limpar o formulário
+      document.getElementById('meuFormulario').reset();
+      document.querySelector('.file-input-text').textContent = 'Selecionar arquivo';
+      
+      // Opcionalmente exibir link para o arquivo
+      if (data.url) {
+        const linkArea = document.getElementById('linkArquivo');
+        if (linkArea) {
+          linkArea.innerHTML = `<p>Acesse seu arquivo: <a href="${data.url}" target="_blank">${data.fileName}</a></p>`;
+        }
       }
-      dados.laboratorio = labs;
-
-      // Valida 48h
-      const hoje = new Date();
-      const dataSelecionada = new Date(dados.data);
-      const prazoMinimo = new Date(hoje);
-      prazoMinimo.setDate(hoje.getDate() + 2);
-      if (dataSelecionada < prazoMinimo) {
-        alert("O prazo mínimo para agendamento é de 48 horas.");
-        return;
-      }
-
-      const btn = form.querySelector('button');
-      btn.disabled = true;
-      btn.textContent = "Enviando...";
-
-      fetch('https://script.google.com/macros/s/AKfycbzmnwPGsNti7vdouZlY_bPK0dKbFGvD-zXt9ZRtXbL7nNEMbr8iNzbKFriMqh6SQcHZ/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados)
-      })
-      .then(() => {
-        document.querySelector('.form-container').innerHTML = `
-          <h3>✅ Agendamento realizado com sucesso!</h3>
-          <p>Você receberá um e-mail de confirmação em breve.</p>
-          <button onclick="abrirUpload()">📎 Enviar Roteiro</button>
-          <button onclick="window.location.reload()">➕ Novo Agendamento</button>
-        `;
-      })
-      .catch(err => {
-        alert("Erro ao enviar. Tente novamente.");
-        btn.disabled = false;
-        btn.textContent = "Enviar Registro";
-      });
-    });
-
-    function abrirUpload() {
-      window.open(
-        'https://script.google.com/macros/s/AKfycbzmnwPGsNti7vdouZlY_bPK0dKbFGvD-zXt9ZRtXbL7nNEMbr8iNzbKFriMqh6SQcHZ/exec?view=upload',
-        'uploadJanela',
-        'width=500,height=400'
-      );
+    } else {
+      // Mostrar erro
+      alert('Erro ao enviar arquivo: ' + (data.error || 'Erro desconhecido'));
     }
-  </script>
+  })
+  .catch(error => {
+    console.error('Erro:', error);
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = btnTextoOriginal;
+    alert('Erro ao enviar arquivo. Por favor, tente novamente.');
+  });
+});
+    </script>
 </body>
 </html>
