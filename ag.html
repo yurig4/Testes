@@ -1,66 +1,186 @@
-<script>
-document.getElementById('aulasPraticasForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  const form = e.target;
-  const formData = new FormData(form);
-  const dados = {};
-  formData.forEach((value, key) => {
-    if (dados[key]) {
-      if (Array.isArray(dados[key])) {
-        dados[key].push(value);
-      } else {
-        dados[key] = [dados[key], value];
-      }
-    } else {
-      dados[key] = value;
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Aulas Práticas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
     }
-  });
+    .container {
+      background: #fff;
+      max-width: 700px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 25px;
+      padding: 12px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #3367d6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Registro de Aulas Práticas</h2>
+    <div class="form-container">
+      <form id="aulasPraticasForm">
+        <label>Nome do Professor:</label>
+        <input type="text" name="nomeProfessor" required>
 
-  // Validação extra (laboratório)
-  const laboratorios = Array.from(document.querySelectorAll('input[name="laboratorio"]:checked')).map(el => el.value);
-  if (laboratorios.length === 0) {
-    alert('Por favor, selecione pelo menos um laboratório.');
-    return;
-  }
-  dados.laboratorio = laboratorios;
+        <label>Email:</label>
+        <input type="email" name="emailProfessor" required>
 
-  // Validação 48h
-  const hoje = new Date();
-  const dataSelecionada = new Date(dados.data);
-  const minimo = new Date();
-  minimo.setDate(hoje.getDate() + 2);
-  if (dataSelecionada < minimo) {
-    alert('O prazo mínimo para agendamento é de 48 horas.');
-    return;
-  }
+        <label>Disciplina:</label>
+        <input type="text" name="disciplina" required>
 
-  const btn = form.querySelector('button[type="submit"]');
-  btn.disabled = true;
-  btn.innerText = 'Enviando...';
+        <label>Turma:</label>
+        <input type="text" name="turma" required>
 
-  fetch('https://script.google.com/macros/s/AKfycbzmnwPGsNti7vdouZlY_bPK0dKbFGvD-zXt9ZRtXbL7nNEMbr8iNzbKFriMqh6SQcHZ/exec', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dados)
-  })
-  .then(() => {
-    document.querySelector('.form-container').innerHTML = `
-      <h2>✅ Agendamento realizado com sucesso!</h2>
-      <p>Você receberá um e-mail de confirmação em breve.</p>
-      <button onclick="abrirUpload()">📎 Enviar Roteiro</button>
-      <button onclick="window.location.reload()">➕ Novo Agendamento</button>
-    `;
-  })
-  .catch(err => {
-    console.error('Erro:', err);
-    alert('Erro ao enviar formulário. Tente novamente.');
-    btn.disabled = false;
-    btn.innerText = 'Enviar Registro';
-  });
-});
+        <label>Assunto da Aula:</label>
+        <input type="text" name="assunto" required>
 
-function abrirUpload() {
-  window.open('https://script.google.com/macros/s/SEU_DEPLOY_ID/exec?view=upload', 'uploadJanela', 'width=500,height=400');
-}
-</script>
+        <label>Data da Aula:</label>
+        <input type="date" name="data" required>
+
+        <label>Horário de Início:</label>
+        <input type="time" name="horarioInicio" required>
+
+        <label>Horário de Término:</label>
+        <input type="time" name="horarioFim" required>
+
+        <label>Número de Alunos:</label>
+        <input type="number" name="numAlunos" required>
+
+        <label>Número de Grupos:</label>
+        <input type="number" name="numGrupos" required>
+
+        <label>Laboratório:</label>
+        <div>
+          <input type="checkbox" name="laboratorio" value="Didático"> Didático
+          <input type="checkbox" name="laboratorio" value="Agronomia"> Agronomia
+          <input type="checkbox" name="laboratorio" value="Analítica"> Analítica
+        </div>
+
+        <label>Vidrarias por Grupo:</label>
+        <textarea name="vidrariasGrupo" required></textarea>
+
+        <label>Vidrarias Comuns:</label>
+        <textarea name="vidrariasComuns"></textarea>
+
+        <label>Soluções:</label>
+        <textarea name="solucoes"></textarea>
+
+        <label>Reagentes:</label>
+        <textarea name="reagentes"></textarea>
+
+        <label>Equipamentos:</label>
+        <textarea name="equipamentos"></textarea>
+
+        <label>Observações:</label>
+        <textarea name="observacoes"></textarea>
+
+        <button type="submit">Enviar Registro</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('aulasPraticasForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const dados = {};
+      formData.forEach((value, key) => {
+        if (dados[key]) {
+          if (Array.isArray(dados[key])) {
+            dados[key].push(value);
+          } else {
+            dados[key] = [dados[key], value];
+          }
+        } else {
+          dados[key] = value;
+        }
+      });
+
+      // Verifica laboratórios
+      const labs = Array.from(document.querySelectorAll('input[name="laboratorio"]:checked')).map(el => el.value);
+      if (labs.length === 0) {
+        alert('Selecione pelo menos um laboratório.');
+        return;
+      }
+      dados.laboratorio = labs;
+
+      // Valida 48h
+      const hoje = new Date();
+      const dataSelecionada = new Date(dados.data);
+      const prazoMinimo = new Date(hoje);
+      prazoMinimo.setDate(hoje.getDate() + 2);
+      if (dataSelecionada < prazoMinimo) {
+        alert("O prazo mínimo para agendamento é de 48 horas.");
+        return;
+      }
+
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
+
+      fetch('https://script.google.com/macros/s/AKfycbzmnwPGsNti7vdouZlY_bPK0dKbFGvD-zXt9ZRtXbL7nNEMbr8iNzbKFriMqh6SQcHZ/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      })
+      .then(() => {
+        document.querySelector('.form-container').innerHTML = `
+          <h3>✅ Agendamento realizado com sucesso!</h3>
+          <p>Você receberá um e-mail de confirmação em breve.</p>
+          <button onclick="abrirUpload()">📎 Enviar Roteiro</button>
+          <button onclick="window.location.reload()">➕ Novo Agendamento</button>
+        `;
+      })
+      .catch(err => {
+        alert("Erro ao enviar. Tente novamente.");
+        btn.disabled = false;
+        btn.textContent = "Enviar Registro";
+      });
+    });
+
+    function abrirUpload() {
+      window.open(
+        'https://script.google.com/macros/s/AKfycbzmnwPGsNti7vdouZlY_bPK0dKbFGvD-zXt9ZRtXbL7nNEMbr8iNzbKFriMqh6SQcHZ/exec?view=upload',
+        'uploadJanela',
+        'width=500,height=400'
+      );
+    }
+  </script>
+</body>
+</html>
