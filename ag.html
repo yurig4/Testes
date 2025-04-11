@@ -1,0 +1,45 @@
+<form id="form">
+  <input type="text" id="nome" placeholder="Seu nome" required><br><br>
+  <input type="file" id="roteiro" accept="application/pdf"><br><br>
+  <button type="submit">Enviar</button>
+</form>
+
+<div id="status"></div>
+
+<script>
+  document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const nome = document.getElementById('nome').value;
+    const file = document.getElementById('roteiro').files[0];
+
+    if (!file || file.type !== "application/pdf") {
+      document.getElementById('status').innerText = 'Envie um PDF válido.';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async function () {
+      const base64Data = reader.result.split(',')[1];
+
+      const body = JSON.stringify({
+        nome: nome,
+        fileName: file.name,
+        pdfBase64: base64Data
+      });
+
+      const resposta = await fetch("https://script.google.com/macros/s/AKfycbzmnwPGsNti7vdouZlY_bPK0dKbFGvD-zXt9ZRtXbL7nNEMbr8iNzbKFriMqh6SQcHZ/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: body
+      });
+
+      const resultado = await resposta.text();
+      document.getElementById('status').innerText = resultado;
+    };
+    
+    reader.readAsDataURL(file);
+  });
+</script>
